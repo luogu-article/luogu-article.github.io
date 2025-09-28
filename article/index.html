@@ -711,26 +711,22 @@
             
             pagination.innerHTML = paginationHTML;
             
-            // 绑定事件
-            document.getElementById('prev-page').addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
+            // 使用事件委托
+            pagination.addEventListener('click', function(e) {
+                if (e.target.id === 'prev-page') {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderTable();
+                    }
+                } else if (e.target.id === 'next-page') {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderTable();
+                    }
+                } else if (e.target.classList.contains('page-btn')) {
+                    currentPage = parseInt(e.target.getAttribute('data-page'));
                     renderTable();
                 }
-            });
-            
-            document.getElementById('next-page').addEventListener('click', () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderTable();
-                }
-            });
-            
-            document.querySelectorAll('.page-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    currentPage = parseInt(this.getAttribute('data-page'));
-                    renderTable();
-                });
             });
         }
 
