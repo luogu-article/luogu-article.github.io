@@ -185,7 +185,7 @@
             text-align: left;
             border-bottom: 1px solid #eee;
             word-wrap: break-word;
-            vertical-align: top;
+            vertical-align: middle;
         }
         
         th {
@@ -222,7 +222,8 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            flex-wrap: wrap;
+            text-decoration: none; /* 移除下划线 */
+            color: inherit; /* 继承父元素颜色 */
         }
         
         .author-tag {
@@ -667,10 +668,8 @@
                             </a>
                         </td>
                         <td>
-                            <div class="author-info">
-                                <a href="/user/${article.author.uid}" style="color: ${authorColor}">
-                                    ${article.author.name}
-                                </a>
+                            <a href="/user/${article.author.uid}" class="author-info">
+                                <span style="color: ${authorColor}; font-weight: bold;">${article.author.name}</span>
                                 ${article.author.tag ? `
                                     <span class="author-tag" style="background-color: ${authorColor}; border-color: ${darkenColor(authorColor, 20)};">
                                         ${article.author.tag}
@@ -684,7 +683,7 @@
                                         </g>
                                     </svg>
                                 ` : ''}
-                            </div>
+                            </a>
                         </td>
                         <td>${formatDate(article.time)}</td>
                         <td>${article.like.cnt}</td>
