@@ -571,8 +571,14 @@
                 const homeData = await homeResponse.json();
                 document.getElementById('update-time').textContent = formatDate(homeData.curtime);
                 
-                // 加载文章数据
-                const dataFile = CURRENT_CATEGORY === 'qb' ? 'article.json' : `article_${CURRENT_CATEGORY}.json`;
+                // 根据当前分区确定数据文件路径
+                let dataFile;
+                if (CURRENT_CATEGORY === 'qb') {
+                    dataFile = 'article.json';
+                } else {
+                    dataFile = `article_${CURRENT_CATEGORY}.json`;
+                }
+                
                 const articleResponse = await fetch(dataFile);
                 const articleData = await articleResponse.json();
                 
