@@ -656,6 +656,7 @@
                     </tr>
                 `;
             }).join('');
+            renderPagination(currentPage, totalPages, filteredArticles.length);
         }
 
         function renderPagination(currentPage, totalPages, totalItems) {
