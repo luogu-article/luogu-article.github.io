@@ -202,9 +202,9 @@
         
         /* 固定列宽 */
         th:nth-child(1), td:nth-child(1) { width: 6%; }   /* 序号 */
-        th:nth-child(2), td:nth-child(2) { width: 38%; } /* 文章名称 */
+        th:nth-child(2), td:nth-child(2) { width: 35%; } /* 文章名称 */
         th:nth-child(3), td:nth-child(3) { width: 10%; } /* 分区 */
-        th:nth-child(4), td:nth-child(4) { width: 15%; } /* 作者 */
+        th:nth-child(4), td:nth-child(4) { width: 18%; } /* 作者 */
         th:nth-child(5), td:nth-child(5) { width: 15%; } /* 发布时间 */
         th:nth-child(6), td:nth-child(6) { width: 8%; }  /* 点赞量 */
         th:nth-child(7), td:nth-child(7) { width: 8%; }  /* 评论量 */
@@ -242,12 +242,21 @@
         }
         
         /* 分页样式 */
+        .pagination-container {
+            position: sticky;
+            bottom: 0;
+            background-color: #f5f7fa;
+            padding: 15px 0;
+            margin-top: 20px;
+            border-top: 1px solid #eaeaea;
+            z-index: 10;
+        }
+        
         .pagination {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
-            margin-top: 20px;
         }
         
         .pagination button {
@@ -285,6 +294,7 @@
             background-color: #2c3e50;
             color: #ecf0f1;
             padding: 30px 0;
+            margin-top: 20px;
         }
         
         .footer-content {
@@ -351,6 +361,10 @@
             
             table {
                 table-layout: auto;
+            }
+            
+            .pagination {
+                flex-wrap: wrap;
             }
         }
     </style>
@@ -428,13 +442,17 @@
                     </tbody>
                 </table>
             </div>
-            
-            <!-- 分页控件 -->
-            <div class="pagination">
-                <button id="prev-page" disabled>上一页</button>
-                <div id="page-numbers"></div>
-                <button id="next-page">下一页</button>
-                <div class="pagination-info" id="page-info"></div>
+        </div>
+        
+        <!-- 分页控件 -->
+        <div class="pagination-container">
+            <div class="container">
+                <div class="pagination">
+                    <button id="prev-page" disabled>上一页</button>
+                    <div id="page-numbers"></div>
+                    <button id="next-page">下一页</button>
+                    <div class="pagination-info" id="page-info"></div>
+                </div>
             </div>
         </div>
     </main>
