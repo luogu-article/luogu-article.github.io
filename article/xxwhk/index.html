@@ -414,15 +414,15 @@
             </div>
             
             <div class="categories">
-                <a href="../" class="category" id="all-category">全部</a>
-                <a href="../grjl" class="category">个人记录</a>
-                <a href="../tj" class="category">题解</a>
-                <a href="../kjgc" class="category">科技·工程</a>
-                <a href="../sfll" class="category">算法·理论</a>
-                <a href="../shyj" class="category">生活·游记</a>
-                <a href="../xxwhk" class="category">学习·文化课</a>
-                <a href="../xxyl" class="category">休闲·娱乐</a>
-                <a href="../xh" class="category">闲话</a>
+                <a href="/article" class="category" id="all-category">全部</a>
+                <a href="/article/grjl" class="category">个人记录</a>
+                <a href="/article/tj" class="category">题解</a>
+                <a href="/article/kjgc" class="category">科技·工程</a>
+                <a href="/article/sfll" class="category">算法·理论</a>
+                <a href="/article/shyj" class="category">生活·游记</a>
+                <a href="/article/xxwhk" class="category">学习·文化课</a>
+                <a href="/article/xxyl" class="category">休闲·娱乐</a>
+                <a href="/article/xh" class="category">闲话</a>
             </div>
             
             <div class="table-container">
@@ -669,12 +669,12 @@
                             </a>
                         </td>
                         <td>
-                            <a href="${CURRENT_CATEGORY === 'qb' ? article.category : '../' + article.category}" class="category-name">
+                            <a href="/article/${article.category}" class="category-name">
                                 ${categoryNameMap[article.category] || article.category}
                             </a>
                         </td>
                         <td>
-                            <a href="${CURRENT_CATEGORY === 'qb' ? 'user/' : '../user/'}${article.author.uid}" class="author-info">
+                            <a href="/user/${article.author.uid}" class="author-info">
                                 <span style="color: ${authorColor}; font-weight: bold;">${article.author.name}</span>
                                 ${article.author.tag ? `
                                     <span class="author-tag" style="background-color: ${authorColor}; border-color: ${darkenColor(authorColor, 20)};">
