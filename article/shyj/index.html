@@ -567,7 +567,7 @@
         async function loadData() {
             try {
                 // 加载更新时间
-                const homeResponse = await fetch('../home.json');
+                const homeResponse = await fetch('/home.json');
                 const homeData = await homeResponse.json();
                 document.getElementById('update-time').textContent = formatDate(homeData.curtime);
                 
