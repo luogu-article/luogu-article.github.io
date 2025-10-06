@@ -163,8 +163,9 @@
         }
         
         .user-stats {
-            display: flex;
-            gap: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
             margin-bottom: 20px;
         }
         
@@ -174,8 +175,6 @@
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             text-align: center;
-            flex: 1;
-            min-width: 120px;
         }
         
         .stat-value {
@@ -194,6 +193,64 @@
             font-size: 0.8rem;
             color: #95a5a6;
             margin-top: 5px;
+        }
+        
+        .stat-detail {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        /* 数据对比卡片 */
+        .comparison-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .comparison-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .comparison-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .comparison-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .comparison-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .comparison-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .comparison-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .comparison-rank {
+            font-size: 0.8rem;
+            color: #95a5a6;
         }
         
         /* 表格样式 */
@@ -378,8 +435,11 @@
             }
             
             .user-stats {
-                flex-direction: column;
-                gap: 15px;
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-cards {
+                grid-template-columns: 1fr;
             }
             
             th, td {
@@ -427,6 +487,10 @@
             
             <div id="user-profile-container" class="loading">
                 加载中...
+            </div>
+            
+            <div id="comparison-cards-container" class="comparison-cards" style="display: none;">
+                <!-- 数据对比卡片将通过JavaScript动态加载 -->
             </div>
             
             <div id="user-articles-container">
@@ -586,6 +650,9 @@
                 // 渲染用户信息
                 renderUserProfile();
                 
+                // 渲染数据对比卡片
+                renderComparisonCards();
+                
                 // 加载用户文章数据
                 await loadUserArticles();
                 
@@ -607,7 +674,7 @@
                 
                 // 过滤出当前用户的文章
                 userArticles = Object.entries(articleJson)
-                    .filter(([id, article]) => userData.article.includes(id))
+                    .filter(([id, article]) => userData.article.id.includes(id))
                     .map(([id, article]) => ({
                         id,
                         ...article
@@ -652,18 +719,29 @@
                         </div>
                         <div class="user-stats">
                             <div class="stat-card">
-                                <div class="stat-value">${userData.article.length}</div>
+                                <div class="stat-value">${userData.article.cnt}</div>
                                 <div class="stat-label">文章数量</div>
+                                <div class="stat-rank">排名: ${userData.article.rank}</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">${userData.like.cnt}</div>
-                                <div class="stat-label">点赞总数</div>
-                                <div class="stat-rank">排名: ${userData.like.rank}</div>
+                                <div class="stat-value">${userData.article.like.cnt.tot}</div>
+                                <div class="stat-label">总点赞数</div>
+                                <div class="stat-rank">排名: ${userData.article.like.rank.tot}</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">${userData.comment.cnt}</div>
-                                <div class="stat-label">评论总数</div>
-                                <div class="stat-rank">排名: ${userData.comment.rank}</div>
+                                <div class="stat-value">${userData.article.like.cnt.ave}</div>
+                                <div class="stat-label">平均点赞数</div>
+                                <div class="stat-rank">排名: ${userData.article.like.rank.ave}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">${userData.article.comment.cnt.tot}</div>
+                                <div class="stat-label">总评论数</div>
+                                <div class="stat-rank">排名: ${userData.article.comment.rank.tot}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">${userData.article.comment.cnt.ave}</div>
+                                <div class="stat-label">平均评论数</div>
+                                <div class="stat-rank">排名: ${userData.article.comment.rank.ave}</div>
                             </div>
                         </div>
                         <div>
@@ -677,6 +755,90 @@
             
             // 更新页面标题
             document.title = `${userData.name} - 洛谷文章统计站`;
+        }
+
+        // 渲染数据对比卡片
+        function renderComparisonCards() {
+            const container = document.getElementById('comparison-cards-container');
+            
+            container.innerHTML = `
+                <div class="comparison-card">
+                    <div class="comparison-title">点赞数据</div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">总点赞数</span>
+                        <div>
+                            <span class="comparison-value">${userData.article.like.cnt.tot}</span>
+                            <div class="comparison-rank">排名: ${userData.article.like.rank.tot}</div>
+                        </div>
+                    </div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">平均点赞数</span>
+                        <div>
+                            <span class="comparison-value">${userData.article.like.cnt.ave}</span>
+                            <div class="comparison-rank">排名: ${userData.article.like.rank.ave}</div>
+                        </div>
+                    </div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">点赞/文章比</span>
+                        <div>
+                            <span class="comparison-value">${(userData.article.like.cnt.tot / userData.article.cnt).toFixed(2)}</span>
+                            <div class="comparison-rank">每篇文章平均</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comparison-card">
+                    <div class="comparison-title">评论数据</div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">总评论数</span>
+                        <div>
+                            <span class="comparison-value">${userData.article.comment.cnt.tot}</span>
+                            <div class="comparison-rank">排名: ${userData.article.comment.rank.tot}</div>
+                        </div>
+                    </div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">平均评论数</span>
+                        <div>
+                            <span class="comparison-value">${userData.article.comment.cnt.ave}</span>
+                            <div class="comparison-rank">排名: ${userData.article.comment.rank.ave}</div>
+                        </div>
+                    </div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">评论/文章比</span>
+                        <div>
+                            <span class="comparison-value">${(userData.article.comment.cnt.tot / userData.article.cnt).toFixed(2)}</span>
+                            <div class="comparison-rank">每篇文章平均</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comparison-card">
+                    <div class="comparison-title">互动数据</div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">点赞/评论比</span>
+                        <div>
+                            <span class="comparison-value">${(userData.article.like.cnt.tot / userData.article.comment.cnt.tot).toFixed(2)}</span>
+                            <div class="comparison-rank">平均每个评论的点赞</div>
+                        </div>
+                    </div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">总互动量</span>
+                        <div>
+                            <span class="comparison-value">${userData.article.like.cnt.tot + userData.article.comment.cnt.tot}</span>
+                            <div class="comparison-rank">点赞+评论总数</div>
+                        </div>
+                    </div>
+                    <div class="comparison-item">
+                        <span class="comparison-label">平均互动量</span>
+                        <div>
+                            <span class="comparison-value">${((userData.article.like.cnt.tot + userData.article.comment.cnt.tot) / userData.article.cnt).toFixed(2)}</span>
+                            <div class="comparison-rank">每篇文章平均</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.style.display = 'grid';
         }
 
         // 渲染文章表格
