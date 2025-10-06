@@ -51,6 +51,12 @@
             padding: 15px 0;
         }
         
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
         .logo {
             display: flex;
             align-items: center;
@@ -66,6 +72,11 @@
             font-size: 1.4rem;
             font-weight: 600;
             color: #2c3e50;
+        }
+        
+        .update-time-nav {
+            font-size: 0.85rem;
+            color: #7f8c8d;
         }
         
         .nav-links {
@@ -98,14 +109,6 @@
             background-color: #3498db;
         }
         
-        .update-time-nav {
-            font-size: 0.85rem;
-            color: #7f8c8d;
-            margin-left: 15px;
-            padding-left: 15px;
-            border-left: 1px solid #eaeaea;
-        }
-        
         /* 主要内容区域 */
         main {
             padding: 30px 0;
@@ -135,6 +138,23 @@
             border-radius: 50%;
             border: 3px solid #fff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .luogu-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .luogu-link:hover {
+            background-color: #2980b9;
+            color: white;
         }
         
         .user-info {
@@ -177,7 +197,7 @@
             background-color: #f8f9fa;
             border-radius: 6px;
             color: #7f8c8d;
-            font-style: italic;
+            text-align: left;
         }
         
         .user-details {
@@ -206,37 +226,31 @@
             color: #2c3e50;
         }
         
-        .luogu-link {
-            display: inline-block;
-            padding: 8px 16px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 4px;
-            font-weight: 500;
-            margin-top: 10px;
-        }
-        
-        .luogu-link:hover {
-            background-color: #2980b9;
-            color: white;
-        }
-        
-        /* 数据对比卡片 */
-        .comparison-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+        /* 数据统计区域 */
+        .stats-section {
             margin-bottom: 30px;
         }
         
-        .comparison-card {
+        .stats-section h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.4rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
             background-color: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
         
-        .comparison-title {
+        .stat-card h3 {
             font-size: 1.1rem;
             font-weight: 600;
             color: #2c3e50;
@@ -244,7 +258,7 @@
             text-align: center;
         }
         
-        .comparison-item {
+        .stat-item {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
@@ -252,25 +266,25 @@
             border-bottom: 1px solid #f0f0f0;
         }
         
-        .comparison-item:last-child {
+        .stat-item:last-child {
             margin-bottom: 0;
             padding-bottom: 0;
             border-bottom: none;
         }
         
-        .comparison-label {
+        .stat-label {
             font-size: 0.9rem;
             color: #7f8c8d;
             text-align: left;
         }
         
-        .comparison-value {
+        .stat-value {
             font-weight: 600;
             color: #2c3e50;
             text-align: right;
         }
         
-        .comparison-rank {
+        .stat-rank {
             font-size: 0.8rem;
             color: #95a5a6;
             text-align: right;
@@ -470,19 +484,17 @@
                 gap: 15px;
             }
             
+            .logo-area {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                text-align: center;
+            }
+            
             .nav-links {
                 width: 100%;
                 justify-content: center;
                 flex-wrap: wrap;
-            }
-            
-            .update-time-nav {
-                margin-left: 0;
-                padding-left: 0;
-                border-left: none;
-                margin-top: 10px;
-                width: 100%;
-                text-align: center;
             }
             
             .user-profile {
@@ -495,7 +507,7 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             
-            .comparison-cards {
+            .stats-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -523,18 +535,20 @@
     <header>
         <div class="container">
             <nav class="navbar">
-                <a href="/" class="logo">
-                    <!-- <img src="/image/logo.ico" alt="洛谷文章统计站"> -->
-                    <span>洛谷文章统计站</span>
-                </a>
+                <div class="logo-area">
+                    <a href="/" class="logo">
+                        <!-- <img src="/image/logo.ico" alt="洛谷文章统计站"> -->
+                        <span>洛谷文章统计站</span>
+                    </a>
+                    <div class="update-time-nav" id="update-time-nav">
+                        数据更新时间：加载中...
+                    </div>
+                </div>
                 <div class="nav-links">
                     <a href="/">首页</a>
                     <a href="/user" class="active">用户</a>
                     <a href="/article">文章</a>
                     <a href="/QandA">常见问题 Q&A</a>
-                    <div class="update-time-nav" id="update-time-nav">
-                        数据更新时间：加载中...
-                    </div>
                 </div>
             </nav>
         </div>
@@ -543,14 +557,17 @@
     <!-- 主要内容 -->
     <main>
         <div class="container">
-            <h1 class="page-title">用户详情</h1>
+            <h1 class="page-title" id="page-title">用户详情</h1>
             
             <div id="user-profile-container" class="loading">
                 加载中...
             </div>
             
-            <div id="comparison-cards-container" class="comparison-cards" style="display: none;">
-                <!-- 数据对比卡片将通过JavaScript动态加载 -->
+            <div id="stats-container" class="stats-section" style="display: none;">
+                <h2>数据统计</h2>
+                <div class="stats-grid">
+                    <!-- 统计数据将通过JavaScript动态加载 -->
+                </div>
             </div>
             
             <div id="user-articles-container">
@@ -739,8 +756,8 @@
                 // 渲染用户信息
                 renderUserProfile();
                 
-                // 渲染数据对比卡片
-                renderComparisonCards();
+                // 渲染统计数据
+                renderStats();
                 
                 // 加载用户文章数据
                 await loadUserArticles();
@@ -812,7 +829,7 @@
                 <div class="user-profile">
                     <div class="user-avatar">
                         <img src="https://cdn.luogu.com.cn/upload/usericon/${currentUserId}.png" alt="${userData.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiNlZWVlZWUiLz48cGF0aCBkPSJNNTAuNSA1My4zMzNDNTguMzYzOCA1My4zMzMgNjUgNDYuNzA2OCA2NSAzOC44MzMzQzY1IDMwLjk1OTggNTguMzYzOCAyNC4zMzMzIDUwLjUgMjQuMzMzM0M0Mi42MzYyIDI0LjMzMzMgMzYgMzAuOTU5OCAzNiAzOC44MzMzQzM2IDQ2LjcwNjggNDIuNjM2MiA1My4zMzMzIDUwLjUgNTMuMzMzWiIgZmlsbD0iI2JiYmJiYiIvPjxwYXRoIGQ9Ik0zMCA3Ny4zMzNDMzAgNjguODg4OSAzNi44ODg5IDYyIDQ1LjMzMzMgNjJIOTUuNjY2N0MxMDQuMTExIDYyIDExMSA2OC44ODg5IDExMSA3Ny4zMzNWOTdIMzBWNzcuMzMzWiIgZmlsbD0iI2JiYmJiYiIvPjwvc3ZnPg=='">
-                        <a href="https://www.luogu.com.cn/user/${currentUserId}" class="luogu-link" target="_blank" style="display: block; margin-top: 10px;">
+                        <a href="https://www.luogu.com.cn/user/${currentUserId}" class="luogu-link" target="_blank">
                             访问洛谷主页
                         </a>
                     </div>
@@ -859,84 +876,86 @@
             `;
             
             // 更新页面标题
-            document.title = `${userData.name} - 洛谷文章统计站`;
+            document.title = `${userData.name} 的个人中心 - 洛谷文章统计站`;
+            document.getElementById('page-title').textContent = `${userData.name} 的个人中心`;
         }
 
-        // 渲染数据对比卡片
-        function renderComparisonCards() {
-            const container = document.getElementById('comparison-cards-container');
+        // 渲染统计数据
+        function renderStats() {
+            const container = document.getElementById('stats-container');
+            const statsGrid = container.querySelector('.stats-grid');
             
-            container.innerHTML = `
-                <div class="comparison-card">
-                    <div class="comparison-title">文章数据</div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">文章数量</span>
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <h3>文章数据</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">文章数量</span>
                         <div>
-                            <span class="comparison-value">${userData.article.cnt}</span>
-                            <div class="comparison-rank">排名: ${userData.article.rank}</div>
+                            <span class="stat-value">${userData.article.cnt}</span>
+                            <div class="stat-rank">排名: ${userData.article.rank}</div>
                         </div>
                     </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">总点赞数</span>
+                    <div class="stat-item">
+                        <span class="stat-label">总点赞数</span>
                         <div>
-                            <span class="comparison-value">${userData.article.like.cnt.tot}</span>
-                            <div class="comparison-rank">排名: ${userData.article.like.rank.tot}</div>
+                            <span class="stat-value">${userData.article.like.cnt.tot}</span>
+                            <div class="stat-rank">排名: ${userData.article.like.rank.tot}</div>
                         </div>
                     </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">平均点赞数</span>
+                    <div class="stat-item">
+                        <span class="stat-label">平均点赞数</span>
                         <div>
-                            <span class="comparison-value">${userData.article.like.cnt.ave}</span>
-                            <div class="comparison-rank">排名: ${userData.article.like.rank.ave}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="comparison-card">
-                    <div class="comparison-title">评论数据</div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">总评论数</span>
-                        <div>
-                            <span class="comparison-value">${userData.article.comment.cnt.tot}</span>
-                            <div class="comparison-rank">排名: ${userData.article.comment.rank.tot}</div>
-                        </div>
-                    </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">平均评论数</span>
-                        <div>
-                            <span class="comparison-value">${userData.article.comment.cnt.ave}</span>
-                            <div class="comparison-rank">排名: ${userData.article.comment.rank.ave}</div>
-                        </div>
-                    </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">点赞/评论比</span>
-                        <div>
-                            <span class="comparison-value">${(userData.article.like.cnt.tot / userData.article.comment.cnt.tot).toFixed(2)}</span>
-                            <div class="comparison-rank">平均每个评论的点赞</div>
+                            <span class="stat-value">${userData.article.like.cnt.ave}</span>
+                            <div class="stat-rank">排名: ${userData.article.like.rank.ave}</div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="comparison-card">
-                    <div class="comparison-title">互动数据</div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">总互动量</span>
+                <div class="stat-card">
+                    <h3>评论数据</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">总评论数</span>
                         <div>
-                            <span class="comparison-value">${userData.article.like.cnt.tot + userData.article.comment.cnt.tot}</span>
-                            <div class="comparison-rank">点赞+评论总数</div>
+                            <span class="stat-value">${userData.article.comment.cnt.tot}</span>
+                            <div class="stat-rank">排名: ${userData.article.comment.rank.tot}</div>
                         </div>
                     </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">平均互动量</span>
+                    <div class="stat-item">
+                        <span class="stat-label">平均评论数</span>
                         <div>
-                            <span class="comparison-value">${((userData.article.like.cnt.tot + userData.article.comment.cnt.tot) / userData.article.cnt).toFixed(2)}</span>
-                            <div class="comparison-rank">每篇文章平均</div>
+                            <span class="stat-value">${userData.article.comment.cnt.ave}</span>
+                            <div class="stat-rank">排名: ${userData.article.comment.rank.ave}</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">点赞/评论比</span>
+                        <div>
+                            <span class="stat-value">${(userData.article.like.cnt.tot / userData.article.comment.cnt.tot).toFixed(2)}</span>
+                            <div class="stat-rank">平均每个评论的点赞</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>互动数据</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">总互动量</span>
+                        <div>
+                            <span class="stat-value">${userData.article.like.cnt.tot + userData.article.comment.cnt.tot}</span>
+                            <div class="stat-rank">点赞+评论总数</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">平均互动量</span>
+                        <div>
+                            <span class="stat-value">${((userData.article.like.cnt.tot + userData.article.comment.cnt.tot) / userData.article.cnt).toFixed(2)}</span>
+                            <div class="stat-rank">每篇文章平均</div>
                         </div>
                     </div>
                 </div>
             `;
             
-            container.style.display = 'grid';
+            container.style.display = 'block';
         }
 
         // 过滤和渲染文章
