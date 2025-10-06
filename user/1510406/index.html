@@ -111,18 +111,18 @@
         
         .user-profile {
             display: flex;
-            gap: 30px;
+            gap: 25px;
             margin-bottom: 30px;
             flex-wrap: wrap;
         }
         
         .user-avatar {
-            flex: 0 0 150px;
+            flex: 0 0 100px;
         }
         
         .user-avatar img {
-            width: 150px;
-            height: 150px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             border: 3px solid #fff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -195,12 +195,6 @@
             margin-top: 5px;
         }
         
-        .stat-detail {
-            font-size: 0.85rem;
-            color: #7f8c8d;
-            margin-top: 5px;
-        }
-        
         /* 数据对比卡片 */
         .comparison-cards {
             display: grid;
@@ -253,6 +247,27 @@
             color: #95a5a6;
         }
         
+        /* 文章列表控制 */
+        .article-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 0.9rem;
+        }
+        
+        input {
+            flex-grow: 1;
+            min-width: 200px;
+        }
+        
         /* 表格样式 */
         .table-container {
             background-color: white;
@@ -290,11 +305,13 @@
         
         /* 固定列宽 */
         th:nth-child(1), td:nth-child(1) { width: 6%; }   /* 序号 */
-        th:nth-child(2), td:nth-child(2) { width: 45%; } /* 文章名称 */
-        th:nth-child(3), td:nth-child(3) { width: 15%; } /* 分区 */
-        th:nth-child(4), td:nth-child(4) { width: 17%; } /* 发布时间 */
+        th:nth-child(2), td:nth-child(2) { width: 40%; } /* 文章名称 */
+        th:nth-child(3), td:nth-child(3) { width: 12%; } /* 分区 */
+        th:nth-child(4), td:nth-child(4) { width: 15%; } /* 发布时间 */
         th:nth-child(5), td:nth-child(5) { width: 8%; }  /* 点赞量 */
-        th:nth-child(6), td:nth-child(6) { width: 9%; }  /* 评论量 */
+        th:nth-child(6), td:nth-child(6) { width: 8%; }  /* 点赞排名 */
+        th:nth-child(7), td:nth-child(7) { width: 8%; }  /* 评论量 */
+        th:nth-child(8), td:nth-child(8) { width: 8%; }  /* 评论排名 */
         
         .article-title {
             font-weight: 500;
@@ -303,6 +320,20 @@
         
         .category-name {
             color: #333;
+        }
+        
+        .rank-good {
+            color: #52c41a;
+            font-weight: 600;
+        }
+        
+        .rank-medium {
+            color: #faad14;
+            font-weight: 600;
+        }
+        
+        .rank-normal {
+            color: #666;
         }
         
         /* 加载状态 */
@@ -495,6 +526,24 @@
             
             <div id="user-articles-container">
                 <h2 style="margin-bottom: 15px; color: #2c3e50;">用户文章</h2>
+                
+                <div class="article-controls">
+                    <select id="sort-by">
+                        <option value="time">发布时间</option>
+                        <option value="like">点赞量</option>
+                        <option value="comment">评论量</option>
+                        <option value="likeRank">点赞排名</option>
+                        <option value="commentRank">评论排名</option>
+                    </select>
+                    
+                    <select id="sort-order">
+                        <option value="desc">降序</option>
+                        <option value="asc">升序</option>
+                    </select>
+                    
+                    <input type="text" id="search" placeholder="搜索文章">
+                </div>
+                
                 <div class="table-container">
                     <table id="article-table">
                         <thead>
@@ -504,7 +553,9 @@
                                 <th>分区</th>
                                 <th>发布时间</th>
                                 <th>点赞量</th>
+                                <th>点赞排名</th>
                                 <th>评论量</th>
+                                <th>评论排名</th>
                             </tr>
                         </thead>
                         <tbody id="article-list">
@@ -597,6 +648,7 @@
         let currentUserId = null;
         let userData = null;
         let userArticles = [];
+        let allArticles = []; // 存储所有文章用于计算排名
         let currentPage = 1;
         const itemsPerPage = 20;
 
@@ -614,6 +666,9 @@
             loadUserData();
             
             // 绑定事件监听器
+            document.getElementById('sort-by').addEventListener('change', sortAndRender);
+            document.getElementById('sort-order').addEventListener('change', sortAndRender);
+            document.getElementById('search').addEventListener('input', filterAndRender);
             document.getElementById('prev-page').addEventListener('click', goToPrevPage);
             document.getElementById('next-page').addEventListener('click', goToNextPage);
         });
@@ -657,8 +712,7 @@
                 await loadUserArticles();
                 
                 // 初始渲染文章列表
-                renderArticleTable();
-                updatePagination();
+                filterAndRender();
             } catch (error) {
                 console.error('加载用户数据失败:', error);
                 showError('数据加载失败，请稍后重试');
@@ -672,12 +726,22 @@
                 const articleResponse = await fetch('/article/article.json');
                 const articleJson = await articleResponse.json();
                 
+                // 转换为数组
+                allArticles = Object.entries(articleJson).map(([id, article]) => ({
+                    id,
+                    ...article
+                }));
+                
+                // 计算所有文章的排名
+                calculateArticleRanks();
+                
                 // 过滤出当前用户的文章
-                userArticles = Object.entries(articleJson)
-                    .filter(([id, article]) => userData.article.id.includes(id))
-                    .map(([id, article]) => ({
-                        id,
-                        ...article
+                userArticles = allArticles
+                    .filter(article => userData.article.id.includes(article.id))
+                    .map(article => ({
+                        ...article,
+                        likeRank: article.likeRank,
+                        commentRank: article.commentRank
                     }));
                 
                 // 按发布时间降序排序
@@ -686,6 +750,21 @@
                 console.error('加载文章数据失败:', error);
                 showError('文章数据加载失败');
             }
+        }
+
+        // 计算文章排名
+        function calculateArticleRanks() {
+            // 计算点赞排名
+            const likeSorted = [...allArticles].sort((a, b) => b.like.cnt - a.like.cnt);
+            likeSorted.forEach((article, index) => {
+                article.likeRank = index + 1;
+            });
+            
+            // 计算评论排名
+            const commentSorted = [...allArticles].sort((a, b) => b.comment.cnt - a.comment.cnt);
+            commentSorted.forEach((article, index) => {
+                article.commentRank = index + 1;
+            });
         }
 
         // 渲染用户信息
@@ -698,7 +777,7 @@
             userProfileContainer.innerHTML = `
                 <div class="user-profile">
                     <div class="user-avatar">
-                        <img src="https://cdn.luogu.com.cn/upload/usericon/${currentUserId}.png" alt="${userData.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiNlZWVlZWUiLz48cGF0aCBkPSJNNzUgODBDODcuNzA5MSA4MCA5OCA2OS43MDkxIDk4IDU3Qzk4IDQ0LjI5MDkgODcuNzA5MSAzNCA3NSAzNEM2Mi4yOTA5IDM0IDUyIDQ0LjI5MDkgNTIgNTdDNTIgNjkuNzA5MSA2Mi4yOTA5IDgwIDc1IDgwWiIgZmlsbD0iI2JiYmJiYiIvPjxwYXRoIGQ9Ik00NSAxMTZDNDUgMTAzLjI5MSA1NS4yOTEgOTMgNjggOTNIODJDOTQuNzA5IDkzIDEwNSAxMDMuMjkxIDEwNSAxMTZWMTQ1SDQ1VjExNloiIGZpbGw9IiNiYmJiYmIiLz48L3N2Zz4='">
+                        <img src="https://cdn.luogu.com.cn/upload/usericon/${currentUserId}.png" alt="${userData.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiNlZWVlZWUiLz48cGF0aCBkPSJNNTAuNSA1My4zMzNDNTguMzYzOCA1My4zMzMgNjUgNDYuNzA2OCA2NSAzOC44MzMzQzY1IDMwLjk1OTggNTguMzYzOCAyNC4zMzMzIDUwLjUgMjQuMzMzM0M0Mi42MzYyIDI0LjMzMzMgMzYgMzAuOTU5OCAzNiAzOC44MzMzQzM2IDQ2LjcwNjggNDIuNjM2MiIDUzLjMzMzMgNTAuNSA1My4zMzMzWiIgZmlsbD0iI2JiYmJiYiIvPjxwYXRoIGQ9Ik0zMCA3Ny4zMzNDMzAgNjguODg4OSAzNi44ODg5IDYyIDQ1LjMzMzMgNjJIOTUuNjY2N0MxMDQuMTExIDYyIDExMSA2OC44ODg5IDExMSA3Ny4zMzNWOTdIMzBWNzcuMzMzWiIgZmlsbD0iI2JiYmJiYiIvPjwvc3ZnPg=='">
                     </div>
                     <div class="user-info">
                         <div class="user-name-container">
@@ -763,56 +842,6 @@
             
             container.innerHTML = `
                 <div class="comparison-card">
-                    <div class="comparison-title">点赞数据</div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">总点赞数</span>
-                        <div>
-                            <span class="comparison-value">${userData.article.like.cnt.tot}</span>
-                            <div class="comparison-rank">排名: ${userData.article.like.rank.tot}</div>
-                        </div>
-                    </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">平均点赞数</span>
-                        <div>
-                            <span class="comparison-value">${userData.article.like.cnt.ave}</span>
-                            <div class="comparison-rank">排名: ${userData.article.like.rank.ave}</div>
-                        </div>
-                    </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">点赞/文章比</span>
-                        <div>
-                            <span class="comparison-value">${(userData.article.like.cnt.tot / userData.article.cnt).toFixed(2)}</span>
-                            <div class="comparison-rank">每篇文章平均</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="comparison-card">
-                    <div class="comparison-title">评论数据</div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">总评论数</span>
-                        <div>
-                            <span class="comparison-value">${userData.article.comment.cnt.tot}</span>
-                            <div class="comparison-rank">排名: ${userData.article.comment.rank.tot}</div>
-                        </div>
-                    </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">平均评论数</span>
-                        <div>
-                            <span class="comparison-value">${userData.article.comment.cnt.ave}</span>
-                            <div class="comparison-rank">排名: ${userData.article.comment.rank.ave}</div>
-                        </div>
-                    </div>
-                    <div class="comparison-item">
-                        <span class="comparison-label">评论/文章比</span>
-                        <div>
-                            <span class="comparison-value">${(userData.article.comment.cnt.tot / userData.article.cnt).toFixed(2)}</span>
-                            <div class="comparison-rank">每篇文章平均</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="comparison-card">
                     <div class="comparison-title">互动数据</div>
                     <div class="comparison-item">
                         <span class="comparison-label">点赞/评论比</span>
@@ -841,21 +870,75 @@
             container.style.display = 'grid';
         }
 
+        // 过滤和渲染文章
+        function filterAndRender() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            
+            let filteredArticles = [...userArticles];
+            
+            if (searchTerm) {
+                filteredArticles = userArticles.filter(article => 
+                    article.title.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            currentPage = 1; // 重置到第一页
+            sortAndRender(filteredArticles);
+        }
+
+        // 排序和渲染文章
+        function sortAndRender(filteredArticles = userArticles) {
+            const sortBy = document.getElementById('sort-by').value;
+            const sortOrder = document.getElementById('sort-order').value;
+            
+            // 排序
+            filteredArticles.sort((a, b) => {
+                let valueA, valueB;
+                
+                if (sortBy === 'time') {
+                    valueA = new Date(a.time).getTime();
+                    valueB = new Date(b.time).getTime();
+                } else if (sortBy === 'like') {
+                    valueA = a.like.cnt;
+                    valueB = b.like.cnt;
+                } else if (sortBy === 'comment') {
+                    valueA = a.comment.cnt;
+                    valueB = b.comment.cnt;
+                } else if (sortBy === 'likeRank') {
+                    valueA = a.likeRank;
+                    valueB = b.likeRank;
+                } else if (sortBy === 'commentRank') {
+                    valueA = a.commentRank;
+                    valueB = b.commentRank;
+                }
+                
+                return sortOrder === 'asc' ? valueA - valueB : valueB - valueA;
+            });
+            
+            // 渲染表格
+            renderArticleTable(filteredArticles);
+            updatePagination(filteredArticles);
+        }
+
         // 渲染文章表格
-        function renderArticleTable() {
+        function renderArticleTable(filteredArticles = userArticles) {
             const tbody = document.getElementById('article-list');
             
-            if (userArticles.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">该用户暂无文章</td></tr>';
+            if (filteredArticles.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">没有找到匹配的文章</td></tr>';
                 return;
             }
             
             // 计算当前页的文章
             const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = Math.min(startIndex + itemsPerPage, userArticles.length);
-            const currentArticles = userArticles.slice(startIndex, endIndex);
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredArticles.length);
+            const currentArticles = filteredArticles.slice(startIndex, endIndex);
             
             tbody.innerHTML = currentArticles.map((article, index) => {
+                // 确定排名显示样式
+                const likeRankClass = getRankClass(article.likeRank, allArticles.length);
+                const commentRankClass = getRankClass(article.commentRank, allArticles.length);
+                
                 return `
                     <tr>
                         <td>${startIndex + index + 1}</td>
@@ -871,15 +954,25 @@
                         </td>
                         <td>${formatDate(article.time)}</td>
                         <td>${article.like.cnt}</td>
+                        <td class="${likeRankClass}">${article.likeRank}</td>
                         <td>${article.comment.cnt}</td>
+                        <td class="${commentRankClass}">${article.commentRank}</td>
                     </tr>
                 `;
             }).join('');
         }
 
+        // 获取排名样式类
+        function getRankClass(rank, total) {
+            const percentage = (rank / total) * 100;
+            if (percentage <= 10) return 'rank-good';
+            if (percentage <= 30) return 'rank-medium';
+            return 'rank-normal';
+        }
+
         // 更新分页控件
-        function updatePagination() {
-            const totalPages = Math.ceil(userArticles.length / itemsPerPage);
+        function updatePagination(filteredArticles = userArticles) {
+            const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
             const pageNumbersContainer = document.getElementById('page-numbers');
             const pageInfo = document.getElementById('page-info');
             const prevButton = document.getElementById('prev-page');
@@ -890,7 +983,7 @@
             nextButton.disabled = currentPage === totalPages || totalPages === 0;
             
             // 更新页码信息
-            pageInfo.textContent = `共 ${userArticles.length} 篇文章，第 ${currentPage} 页，共 ${totalPages} 页`;
+            pageInfo.textContent = `共 ${filteredArticles.length} 篇文章，第 ${currentPage} 页，共 ${totalPages} 页`;
             
             // 生成页码按钮
             let pageButtons = '';
@@ -913,8 +1006,8 @@
             document.querySelectorAll('.page-number').forEach(button => {
                 button.addEventListener('click', function() {
                     currentPage = parseInt(this.getAttribute('data-page'));
-                    renderArticleTable();
-                    updatePagination();
+                    renderArticleTable(filteredArticles);
+                    updatePagination(filteredArticles);
                 });
             });
         }
