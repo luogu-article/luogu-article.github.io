@@ -103,6 +103,8 @@
         }
         
         .update-time-nav {
+            flex: 1;
+            text-align: center;
             font-size: 0.9rem;
             color: #555;
         }
@@ -457,10 +459,13 @@
                 flex-direction: column;
                 gap: 15px;
             }
+
+             .update-time-nav {
+                order: 2;
+            }
             
             .nav-content {
-                flex-direction: column;
-                gap: 15px;
+                order: 3;
             }
             
             .nav-links {
@@ -515,10 +520,10 @@
                     <!-- <img src="image/logo.ico" alt="洛谷文章统计站"> -->
                     <span>洛谷文章统计站</span>
                 </a>
+                <div class="update-time-nav">
+                    数据更新时间：<span id="update-time">加载中...</span>
+                </div>
                 <div class="nav-content">
-                    <div class="update-time-nav">
-                        数据更新时间：<span id="update-time">加载中...</span>
-                    </div>
                     <div class="nav-links">
                         <a href="/">首页</a>
                         <a href="/user" class="active">用户</a>
@@ -533,8 +538,6 @@
     <!-- 主要内容 -->
     <main>
         <div class="container">
-            <h1 class="page-title" id="page-title">用户个人中心</h1>
-            
             <!-- 用户信息卡片 -->
             <div class="user-card">
                 <div class="user-avatar">
