@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>用户详情 - 洛谷文章统计站</title>
-    <!-- <link rel="icon" href="/image/logo.ico" type="image/x-icon"> -->
+    <title>用户名 的个人中心 - 洛谷文章统计站</title>
     <style>
         * {
             margin: 0;
@@ -51,12 +50,6 @@
             padding: 15px 0;
         }
         
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
         .logo {
             display: flex;
             align-items: center;
@@ -74,14 +67,8 @@
             color: #2c3e50;
         }
         
-        .update-time-nav {
-            font-size: 0.85rem;
-            color: #7f8c8d;
-        }
-        
         .nav-links {
             display: flex;
-            align-items: center;
             gap: 25px;
         }
         
@@ -109,6 +96,11 @@
             background-color: #3498db;
         }
         
+        .update-time-nav {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
         /* 主要内容区域 */
         main {
             padding: 30px 0;
@@ -119,66 +111,56 @@
             margin-bottom: 20px;
             color: #2c3e50;
             font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .user-profile {
+        /* 用户信息卡片 */
+        .user-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
             display: flex;
             gap: 25px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
         }
         
         .user-avatar {
-            flex: 0 0 100px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #f0f0f0;
         }
         
         .user-avatar img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .luogu-link {
-            display: inline-block;
-            padding: 8px 16px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 4px;
-            font-weight: 500;
-            margin-top: 10px;
             width: 100%;
-            text-align: center;
-        }
-        
-        .luogu-link:hover {
-            background-color: #2980b9;
-            color: white;
+            height: 100%;
+            object-fit: cover;
         }
         
         .user-info {
             flex: 1;
-            min-width: 300px;
         }
         
-        .user-name-container {
+        .user-name {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 10px;
-            flex-wrap: wrap;
         }
         
-        .user-name {
-            font-size: 1.8rem;
+        .user-name span {
+            font-size: 1.5rem;
             font-weight: 600;
         }
         
-        .user-tag {
-            padding: 4px 8px;
+        .author-tag {
+            padding: 3px 8px;
             border-radius: 4px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: white;
             white-space: nowrap;
         }
@@ -192,107 +174,98 @@
         }
         
         .user-signature {
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 6px;
             color: #7f8c8d;
-            text-align: left;
-        }
-        
-        .user-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
             margin-bottom: 20px;
+            font-style: italic;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
         }
         
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        
-        .detail-label {
-            font-size: 0.85rem;
-            color: #7f8c8d;
-            margin-bottom: 5px;
-        }
-        
-        .detail-value {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        /* 数据统计区域 */
-        .stats-section {
-            margin-bottom: 30px;
-        }
-        
-        .stats-section h2 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-            font-size: 1.4rem;
-        }
-        
-        .stats-grid {
+        .user-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .stat-card {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        
-        .stat-card h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            text-align: center;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
         }
         
         .stat-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
+            padding: 8px 0;
             border-bottom: 1px solid #f0f0f0;
         }
         
-        .stat-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        
         .stat-label {
-            font-size: 0.9rem;
             color: #7f8c8d;
-            text-align: left;
         }
         
         .stat-value {
-            font-weight: 600;
-            color: #2c3e50;
-            text-align: right;
+            font-weight: 500;
         }
         
-        .stat-rank {
-            font-size: 0.8rem;
+        .luogu-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .luogu-link:hover {
+            background-color: #2980b9;
+            color: white;
+        }
+        
+        /* 用户文章统计 */
+        .user-stats-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .stats-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-card-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .stat-card-rank {
+            margin-top: 8px;
+            font-size: 0.85rem;
             color: #95a5a6;
-            text-align: right;
-            margin-top: 2px;
         }
         
         /* 文章列表控制 */
-        .article-controls {
+        .controls {
             display: flex;
             gap: 15px;
             margin-bottom: 20px;
@@ -347,15 +320,13 @@
             background-color: #f9f9f9;
         }
         
-        /* 调整列宽 */
-        th:nth-child(1), td:nth-child(1) { width: 5%; }   /* 序号 */
+        /* 固定列宽 */
+        th:nth-child(1), td:nth-child(1) { width: 6%; }   /* 序号 */
         th:nth-child(2), td:nth-child(2) { width: 40%; } /* 文章名称 */
-        th:nth-child(3), td:nth-child(3) { width: 10%; } /* 分区 */
+        th:nth-child(3), td:nth-child(3) { width: 12%; } /* 分区 */
         th:nth-child(4), td:nth-child(4) { width: 15%; } /* 发布时间 */
-        th:nth-child(5), td:nth-child(5) { width: 7%; }  /* 点赞量 */
-        th:nth-child(6), td:nth-child(6) { width: 7%; }  /* 点赞排名 */
-        th:nth-child(7), td:nth-child(7) { width: 7%; }  /* 评论量 */
-        th:nth-child(8), td:nth-child(8) { width: 9%; }  /* 评论排名 */
+        th:nth-child(5), td:nth-child(5) { width: 13%; }  /* 点赞量及排名 */
+        th:nth-child(6), td:nth-child(6) { width: 14%; }  /* 评论量及排名 */
         
         .article-title {
             font-weight: 500;
@@ -366,18 +337,9 @@
             color: #333;
         }
         
-        /* 加载状态 */
-        .loading {
-            text-align: center;
-            padding: 30px;
+        .rank-info {
+            font-size: 0.85rem;
             color: #7f8c8d;
-        }
-        
-        /* 错误状态 */
-        .error {
-            text-align: center;
-            padding: 30px;
-            color: #e74c3c;
         }
         
         /* 分页样式 */
@@ -484,27 +446,18 @@
                 gap: 15px;
             }
             
-            .logo-area {
-                flex-direction: column;
-                gap: 10px;
-                width: 100%;
-                text-align: center;
-            }
-            
             .nav-links {
                 width: 100%;
                 justify-content: center;
-                flex-wrap: wrap;
             }
             
-            .user-profile {
+            .user-card {
                 flex-direction: column;
-                align-items: center;
                 text-align: center;
             }
             
-            .user-details {
-                grid-template-columns: repeat(2, 1fr);
+            .user-stats {
+                grid-template-columns: 1fr;
             }
             
             .stats-grid {
@@ -535,20 +488,18 @@
     <header>
         <div class="container">
             <nav class="navbar">
-                <div class="logo-area">
-                    <a href="/" class="logo">
-                        <!-- <img src="/image/logo.ico" alt="洛谷文章统计站"> -->
-                        <span>洛谷文章统计站</span>
-                    </a>
-                    <div class="update-time-nav" id="update-time-nav">
-                        数据更新时间：加载中...
-                    </div>
-                </div>
+                <a href="/" class="logo">
+                    <!-- <img src="image/logo.ico" alt="洛谷文章统计站"> -->
+                    <span>洛谷文章统计站</span>
+                </a>
                 <div class="nav-links">
                     <a href="/">首页</a>
                     <a href="/user" class="active">用户</a>
                     <a href="/article">文章</a>
                     <a href="/QandA">常见问题 Q&A</a>
+                </div>
+                <div class="update-time-nav">
+                    数据更新时间：<span id="update-time">加载中...</span>
                 </div>
             </nav>
         </div>
@@ -557,58 +508,107 @@
     <!-- 主要内容 -->
     <main>
         <div class="container">
-            <h1 class="page-title" id="page-title">用户详情</h1>
+            <h1 class="page-title" id="page-title">用户个人中心</h1>
             
-            <div id="user-profile-container" class="loading">
-                加载中...
+            <!-- 用户信息卡片 -->
+            <div class="user-card">
+                <div class="user-avatar">
+                    <img id="user-avatar" src="" alt="用户头像">
+                </div>
+                <div class="user-info">
+                    <div class="user-name">
+                        <span id="user-name">加载中...</span>
+                        <span id="user-tag" class="author-tag" style="display: none;"></span>
+                        <span id="user-badge" style="display: none;"></span>
+                    </div>
+                    <div class="user-signature" id="user-signature">这个人很懒，什么也没有留下~</div>
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">粉丝数</span>
+                            <span class="stat-value">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">关注数</span>
+                            <span class="stat-value">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">全站排名</span>
+                            <span class="stat-value">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">等级分</span>
+                            <span class="stat-value">-</span>
+                        </div>
+                    </div>
+                    <a href="#" id="luogu-link" class="luogu-link" target="_blank">访问洛谷主页</a>
+                </div>
             </div>
             
-            <div id="stats-container" class="stats-section" style="display: none;">
-                <h2>数据统计</h2>
+            <!-- 用户文章统计 -->
+            <div class="user-stats-card">
+                <h2 class="stats-title">文章统计</h2>
                 <div class="stats-grid">
-                    <!-- 统计数据将通过JavaScript动态加载 -->
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="article-count">0</div>
+                        <div class="stat-card-label">文章数量</div>
+                        <div class="stat-card-rank">排名：<span id="article-rank">-</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="like-total">0</div>
+                        <div class="stat-card-label">总点赞量</div>
+                        <div class="stat-card-rank">排名：<span id="like-total-rank">-</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="like-avg">0</div>
+                        <div class="stat-card-label">平均点赞量</div>
+                        <div class="stat-card-rank">排名：<span id="like-avg-rank">-</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="comment-total">0</div>
+                        <div class="stat-card-label">总评论量</div>
+                        <div class="stat-card-rank">排名：<span id="comment-total-rank">-</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="comment-avg">0</div>
+                        <div class="stat-card-label">平均评论量</div>
+                        <div class="stat-card-rank">排名：<span id="comment-avg-rank">-</span></div>
+                    </div>
                 </div>
             </div>
             
-            <div id="user-articles-container">
-                <h2 style="margin-bottom: 15px; color: #2c3e50;">用户文章</h2>
+            <!-- 文章列表控制 -->
+            <div class="controls">
+                <select id="sort-by">
+                    <option value="like">点赞量</option>
+                    <option value="time">发布时间</option>
+                    <option value="comment">评论量</option>
+                </select>
                 
-                <div class="article-controls">
-                    <select id="sort-by">
-                        <option value="time">发布时间</option>
-                        <option value="like">点赞量</option>
-                        <option value="comment">评论量</option>
-                        <option value="likeRank">点赞排名</option>
-                        <option value="commentRank">评论排名</option>
-                    </select>
-                    
-                    <select id="sort-order">
-                        <option value="desc">降序</option>
-                        <option value="asc">升序</option>
-                    </select>
-                    
-                    <input type="text" id="search" placeholder="搜索文章">
-                </div>
+                <select id="sort-order">
+                    <option value="desc">降序</option>
+                    <option value="asc">升序</option>
+                </select>
                 
-                <div class="table-container">
-                    <table id="article-table">
-                        <thead>
-                            <tr>
-                                <th>序号</th>
-                                <th>文章名称</th>
-                                <th>分区</th>
-                                <th>发布时间</th>
-                                <th>点赞量</th>
-                                <th>点赞排名</th>
-                                <th>评论量</th>
-                                <th>评论排名</th>
-                            </tr>
-                        </thead>
-                        <tbody id="article-list">
-                            <!-- 文章数据将通过JavaScript动态加载 -->
-                        </tbody>
-                    </table>
-                </div>
+                <input type="text" id="search" placeholder="搜索文章">
+            </div>
+            
+            <!-- 文章列表 -->
+            <div class="table-container">
+                <table id="article-table">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>文章名称</th>
+                            <th>分区</th>
+                            <th>发布时间</th>
+                            <th>点赞量及排名</th>
+                            <th>评论量及排名</th>
+                        </tr>
+                    </thead>
+                    <tbody id="article-list">
+                        <!-- 文章数据将通过JavaScript动态加载 -->
+                    </tbody>
+                </table>
             </div>
         </div>
         
@@ -691,291 +691,159 @@
         };
 
         // 全局变量
-        let currentUserId = null;
         let userData = null;
         let userArticles = [];
-        let allArticles = []; // 存储所有文章用于计算排名
+        let filteredArticles = [];
         let currentPage = 1;
         const itemsPerPage = 20;
 
         // 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
-            // 获取当前用户ID
-            currentUserId = getCurrentUserId();
+            // 获取用户ID
+            const userId = getUserIdFromPath();
             
-            if (!currentUserId) {
-                showError('无法获取用户ID');
-                return;
+            if (userId) {
+                // 加载数据
+                loadData(userId);
+                
+                // 绑定事件监听器
+                document.getElementById('sort-by').addEventListener('change', sortAndRender);
+                document.getElementById('sort-order').addEventListener('change', sortAndRender);
+                document.getElementById('search').addEventListener('input', filterAndRender);
+                document.getElementById('prev-page').addEventListener('click', goToPrevPage);
+                document.getElementById('next-page').addEventListener('click', goToNextPage);
+            } else {
+                document.getElementById('page-title').textContent = '用户不存在';
+                document.getElementById('user-name').textContent = '用户不存在';
             }
-            
-            // 加载用户数据
-            loadUserData();
-            
-            // 绑定事件监听器
-            document.getElementById('sort-by').addEventListener('change', sortAndRender);
-            document.getElementById('sort-order').addEventListener('change', sortAndRender);
-            document.getElementById('search').addEventListener('input', filterAndRender);
-            document.getElementById('prev-page').addEventListener('click', goToPrevPage);
-            document.getElementById('next-page').addEventListener('click', goToNextPage);
         });
 
-        // 获取当前用户ID
-        function getCurrentUserId() {
-            // 从URL路径中提取用户ID
-            // 路径格式应该是 /user/用户ID/index.html
+        // 从路径获取用户ID
+        function getUserIdFromPath() {
             const pathSegments = window.location.pathname.split('/').filter(segment => segment);
             
-            // 查找'user'后面的部分
-            const userIndex = pathSegments.indexOf('user');
-            if (userIndex !== -1 && userIndex + 1 < pathSegments.length) {
-                return pathSegments[userIndex + 1];
+            // 路径格式应该是 /user/用户ID/ 或 /user/用户ID/index.html
+            if (pathSegments.length >= 2 && pathSegments[0] === 'user') {
+                return pathSegments[1];
             }
             
             return null;
         }
 
-        // 加载用户数据
-        async function loadUserData() {
+        // 加载数据
+        async function loadData(userId) {
             try {
                 // 加载更新时间
                 const homeResponse = await fetch('/home.json');
                 const homeData = await homeResponse.json();
-                document.getElementById('update-time-nav').textContent = `数据更新时间：${formatDate(homeData.curtime)}`;
+                document.getElementById('update-time').textContent = formatDate(homeData.curtime);
                 
                 // 加载用户数据
                 const userResponse = await fetch('/user/user.json');
-                const userJson = await userResponse.json();
+                const userDataAll = await userResponse.json();
                 
-                if (!userJson[currentUserId]) {
-                    showError('用户不存在');
-                    return;
+                if (userDataAll[userId]) {
+                    userData = userDataAll[userId];
+                    displayUserInfo(userId);
+                    
+                    // 加载文章数据
+                    const articleResponse = await fetch('/article/article.json');
+                    const articleData = await articleResponse.json();
+                    
+                    // 过滤出用户文章
+                    userArticles = userData.article.id.map(articleId => {
+                        return {
+                            id: articleId,
+                            ...articleData[articleId]
+                        };
+                    });
+                    
+                    // 初始渲染
+                    filterAndRender();
+                } else {
+                    document.getElementById('page-title').textContent = '用户不存在';
+                    document.getElementById('user-name').textContent = '用户不存在';
                 }
-                
-                userData = userJson[currentUserId];
-                
-                // 渲染用户信息
-                renderUserProfile();
-                
-                // 渲染统计数据
-                renderStats();
-                
-                // 加载用户文章数据
-                await loadUserArticles();
-                
-                // 初始渲染文章列表
-                filterAndRender();
             } catch (error) {
-                console.error('加载用户数据失败:', error);
-                showError('数据加载失败，请稍后重试');
+                console.error('加载数据失败:', error);
+                document.getElementById('update-time').textContent = '加载失败';
+                document.getElementById('user-name').textContent = '数据加载失败';
+                document.getElementById('article-list').innerHTML = '<tr><td colspan="6" style="text-align: center;">数据加载失败，请稍后重试</td></tr>';
             }
         }
 
-        // 加载用户文章数据
-        async function loadUserArticles() {
-            try {
-                // 加载所有文章数据
-                const articleResponse = await fetch('/article/article.json');
-                const articleJson = await articleResponse.json();
-                
-                // 转换为数组
-                allArticles = Object.entries(articleJson).map(([id, article]) => ({
-                    id,
-                    ...article
-                }));
-                
-                // 计算所有文章的排名
-                calculateArticleRanks();
-                
-                // 过滤出当前用户的文章
-                userArticles = allArticles
-                    .filter(article => userData.article.id.includes(article.id))
-                    .map(article => ({
-                        ...article,
-                        likeRank: article.likeRank,
-                        commentRank: article.commentRank
-                    }));
-                
-                // 按发布时间降序排序
-                userArticles.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
-            } catch (error) {
-                console.error('加载文章数据失败:', error);
-                showError('文章数据加载失败');
-            }
-        }
-
-        // 计算文章排名
-        function calculateArticleRanks() {
-            // 计算点赞排名
-            const likeSorted = [...allArticles].sort((a, b) => b.like.cnt - a.like.cnt);
-            likeSorted.forEach((article, index) => {
-                article.likeRank = index + 1;
-            });
-            
-            // 计算评论排名
-            const commentSorted = [...allArticles].sort((a, b) => b.comment.cnt - a.comment.cnt);
-            commentSorted.forEach((article, index) => {
-                article.commentRank = index + 1;
-            });
-        }
-
-        // 渲染用户信息
-        function renderUserProfile() {
-            const userProfileContainer = document.getElementById('user-profile-container');
-            
-            const authorColor = authorColorMap[userData.color] || '#000000';
-            const badgeColor = badgeColorMap[userData.badge] || '#000000';
-            
-            userProfileContainer.innerHTML = `
-                <div class="user-profile">
-                    <div class="user-avatar">
-                        <img src="https://cdn.luogu.com.cn/upload/usericon/${currentUserId}.png" alt="${userData.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiNlZWVlZWUiLz48cGF0aCBkPSJNNTAuNSA1My4zMzNDNTguMzYzOCA1My4zMzMgNjUgNDYuNzA2OCA2NSAzOC44MzMzQzY1IDMwLjk1OTggNTguMzYzOCAyNC4zMzMzIDUwLjUgMjQuMzMzM0M0Mi42MzYyIDI0LjMzMzMgMzYgMzAuOTU5OCAzNiAzOC44MzMzQzM2IDQ2LjcwNjggNDIuNjM2MiA1My4zMzMzIDUwLjUgNTMuMzMzWiIgZmlsbD0iI2JiYmJiYiIvPjxwYXRoIGQ9Ik0zMCA3Ny4zMzNDMzAgNjguODg4OSAzNi44ODg5IDYyIDQ1LjMzMzMgNjJIOTUuNjY2N0MxMDQuMTExIDYyIDExMSA2OC44ODg5IDExMSA3Ny4zMzNWOTdIMzBWNzcuMzMzWiIgZmlsbD0iI2JiYmJiYiIvPjwvc3ZnPg=='">
-                        <a href="https://www.luogu.com.cn/user/${currentUserId}" class="luogu-link" target="_blank">
-                            访问洛谷主页
-                        </a>
-                    </div>
-                    <div class="user-info">
-                        <div class="user-name-container">
-                            <span class="user-name" style="color: ${authorColor};">${userData.name}</span>
-                            ${userData.tag ? `
-                                <span class="user-tag" style="background-color: ${authorColor}; border-color: ${darkenColor(authorColor, 20)};">
-                                    ${userData.tag}
-                                </span>
-                            ` : ''}
-                            ${userData.badge ? `
-                                <svg class="badge-icon" viewBox="0 0 512 512" style="width: 20px; height: 20px; color: ${badgeColor};">
-                                    <g>
-                                        <path fill="${badgeColor}" d="M0 256c0 36.8 20.7 68.8 51.1 84.9C41 373.8 49 411 75 437s63.3 34 96.1 23.9C187.2 491.3 219.2 512 256 512s68.8-20.7 84.9-51.1C373.8 471 411 463 437 437s34-63.3 23.9-96.1C491.3 324.8 512 292.8 512 256s-20.7-68.8-51.1-84.9C471 138.2 463 101 437 75s-63.3-34-96.1-23.9C324.8 20.7 292.8 0 256 0s-68.8 20.7-84.9 51.1C138.2 41 101 49 75 75s-34 63.3-23.9 96.1C20.7 187.2 0 219.2 0 256zm136 0c0-6.1 2.3-12.3 7-17c9.4-9.4 24.6-9.4 33.9 0l47 47c37-37 74-74 111-111c4.7-4.7 10.8-7 17-7s12.3 2.3 17 7c2.3 2.3 4.1 5 5.3 7.9c.6 1.5 1 2.9 1.3 4.4c.2 1.1 .3 2.2 .3 2.2c.1 1.2 .1 1.2 .1 2.5c-.1 1.5-.1 1.9-.1 2.3c-.1 .7-.2 1.5-.3 2.2c-.3 1.5-.7 3-1.3 4.4c-1.2 2.9-2.9 5.6-5.3 7.9c-42.7 42.7-85.3 85.3-128 128c-4.7 4.7-10.8 7-17 7s-12.3-2.3-17-7c-21.3-21.3-42.7-42.7-64-64c-4.7-4.7-7-10.8-7-17z"></path>
-                                        <path fill="white" d="M369 175c9.4 9.4 9.4 24.6 0 33.9L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0z"></path>
-                                    </g>
-                                </svg>
-                            ` : ''}
-                        </div>
-                        <div class="user-signature">
-                            这个人很懒，什么也没有留下~
-                        </div>
-                        <div class="user-details">
-                            <div class="detail-item">
-                                <span class="detail-label">粉丝数</span>
-                                <span class="detail-value">-</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">关注数</span>
-                                <span class="detail-value">-</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">全站排名</span>
-                                <span class="detail-value">-</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">等级分</span>
-                                <span class="detail-value">-</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // 更新页面标题
-            document.title = `${userData.name} 的个人中心 - 洛谷文章统计站`;
+        // 显示用户信息
+        function displayUserInfo(userId) {
+            // 设置页面标题
             document.getElementById('page-title').textContent = `${userData.name} 的个人中心`;
-        }
-
-        // 渲染统计数据
-        function renderStats() {
-            const container = document.getElementById('stats-container');
-            const statsGrid = container.querySelector('.stats-grid');
+            document.title = `${userData.name} 的个人中心 - 洛谷文章统计站`;
             
-            statsGrid.innerHTML = `
-                <div class="stat-card">
-                    <h3>文章数据</h3>
-                    <div class="stat-item">
-                        <span class="stat-label">文章数量</span>
-                        <div>
-                            <span class="stat-value">${userData.article.cnt}</span>
-                            <div class="stat-rank">排名: ${userData.article.rank}</div>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">总点赞数</span>
-                        <div>
-                            <span class="stat-value">${userData.article.like.cnt.tot}</span>
-                            <div class="stat-rank">排名: ${userData.article.like.rank.tot}</div>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">平均点赞数</span>
-                        <div>
-                            <span class="stat-value">${userData.article.like.cnt.ave}</span>
-                            <div class="stat-rank">排名: ${userData.article.like.rank.ave}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <h3>评论数据</h3>
-                    <div class="stat-item">
-                        <span class="stat-label">总评论数</span>
-                        <div>
-                            <span class="stat-value">${userData.article.comment.cnt.tot}</span>
-                            <div class="stat-rank">排名: ${userData.article.comment.rank.tot}</div>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">平均评论数</span>
-                        <div>
-                            <span class="stat-value">${userData.article.comment.cnt.ave}</span>
-                            <div class="stat-rank">排名: ${userData.article.comment.rank.ave}</div>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">点赞/评论比</span>
-                        <div>
-                            <span class="stat-value">${(userData.article.like.cnt.tot / userData.article.comment.cnt.tot).toFixed(2)}</span>
-                            <div class="stat-rank">平均每个评论的点赞</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <h3>互动数据</h3>
-                    <div class="stat-item">
-                        <span class="stat-label">总互动量</span>
-                        <div>
-                            <span class="stat-value">${userData.article.like.cnt.tot + userData.article.comment.cnt.tot}</span>
-                            <div class="stat-rank">点赞+评论总数</div>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">平均互动量</span>
-                        <div>
-                            <span class="stat-value">${((userData.article.like.cnt.tot + userData.article.comment.cnt.tot) / userData.article.cnt).toFixed(2)}</span>
-                            <div class="stat-rank">每篇文章平均</div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            // 设置用户名和样式
+            const userNameElement = document.getElementById('user-name');
+            userNameElement.textContent = userData.name;
+            userNameElement.style.color = authorColorMap[userData.color] || '#000000';
             
-            container.style.display = 'block';
+            // 设置用户标签
+            if (userData.tag) {
+                const userTagElement = document.getElementById('user-tag');
+                userTagElement.textContent = userData.tag;
+                userTagElement.style.backgroundColor = authorColorMap[userData.color] || '#000000';
+                userTagElement.style.display = 'inline-block';
+            }
+            
+            // 设置用户徽章
+            if (userData.badge) {
+                const userBadgeElement = document.getElementById('user-badge');
+                const badgeColor = badgeColorMap[userData.badge] || '#000000';
+                
+                userBadgeElement.innerHTML = `
+                    <svg class="badge-icon" viewBox="0 0 512 512" style="width: 20px; height: 20px; color: ${badgeColor};">
+                        <g>
+                            <path fill="${badgeColor}" d="M0 256c0 36.8 20.7 68.8 51.1 84.9C41 373.8 49 411 75 437s63.3 34 96.1 23.9C187.2 491.3 219.2 512 256 512s68.8-20.7 84.9-51.1C373.8 471 411 463 437 437s34-63.3 23.9-96.1C491.3 324.8 512 292.8 512 256s-20.7-68.8-51.1-84.9C471 138.2 463 101 437 75s-63.3-34-96.1-23.9C324.8 20.7 292.8 0 256 0s-68.8 20.7-84.9 51.1C138.2 41 101 49 75 75s-34 63.3-23.9 96.1C20.7 187.2 0 219.2 0 256zm136 0c0-6.1 2.3-12.3 7-17c9.4-9.4 24.6-9.4 33.9 0l47 47c37-37 74-74 111-111c4.7-4.7 10.8-7 17-7s12.3 2.3 17 7c2.3 2.3 4.1 5 5.3 7.9c.6 1.5 1 2.9 1.3 4.4c.2 1.1 .3 2.2 .3 2.2c.1 1.2 .1 1.2 .1 2.5c-.1 1.5-.1 1.9-.1 2.3c-.1 .7-.2 1.5-.3 2.2c-.3 1.5-.7 3-1.3 4.4c-1.2 2.9-2.9 5.6-5.3 7.9c-42.7 42.7-85.3 85.3-128 128c-4.7 4.7-10.8 7-17 7s-12.3-2.3-17-7c-21.3-21.3-42.7-42.7-64-64c-4.7-4.7-7-10.8-7-17z"></path>
+                            <path fill="white" d="M369 175c9.4 9.4 9.4 24.6 0 33.9L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0z"></path>
+                        </g>
+                    </svg>
+                `;
+                userBadgeElement.style.display = 'inline-block';
+            }
+            
+            // 设置用户头像
+            document.getElementById('user-avatar').src = `https://cdn.luogu.com.cn/upload/usericon/${userId}.png`;
+            
+            // 设置洛谷主页链接
+            document.getElementById('luogu-link').href = `https://www.luogu.com.cn/user/${userId}`;
+            
+            // 设置文章统计数据
+            document.getElementById('article-count').textContent = userData.article.cnt;
+            document.getElementById('article-rank').textContent = userData.article.rank;
+            document.getElementById('like-total').textContent = userData.article.like.cnt.tot;
+            document.getElementById('like-total-rank').textContent = userData.article.like.rank.tot;
+            document.getElementById('like-avg').textContent = userData.article.like.cnt.ave;
+            document.getElementById('like-avg-rank').textContent = userData.article.like.rank.ave;
+            document.getElementById('comment-total').textContent = userData.article.comment.cnt.tot;
+            document.getElementById('comment-total-rank').textContent = userData.article.comment.rank.tot;
+            document.getElementById('comment-avg').textContent = userData.article.comment.cnt.ave;
+            document.getElementById('comment-avg-rank').textContent = userData.article.comment.rank.ave;
         }
 
         // 过滤和渲染文章
         function filterAndRender() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
             
-            let filteredArticles = [...userArticles];
-            
             if (searchTerm) {
                 filteredArticles = userArticles.filter(article => 
                     article.title.toLowerCase().includes(searchTerm)
                 );
+            } else {
+                filteredArticles = [...userArticles];
             }
             
             currentPage = 1; // 重置到第一页
-            sortAndRender(filteredArticles);
+            sortAndRender();
         }
 
         // 排序和渲染文章
-        function sortAndRender(filteredArticles = userArticles) {
+        function sortAndRender() {
             const sortBy = document.getElementById('sort-by').value;
             const sortOrder = document.getElementById('sort-order').value;
             
@@ -992,28 +860,22 @@
                 } else if (sortBy === 'comment') {
                     valueA = a.comment.cnt;
                     valueB = b.comment.cnt;
-                } else if (sortBy === 'likeRank') {
-                    valueA = a.likeRank;
-                    valueB = b.likeRank;
-                } else if (sortBy === 'commentRank') {
-                    valueA = a.commentRank;
-                    valueB = b.commentRank;
                 }
                 
                 return sortOrder === 'asc' ? valueA - valueB : valueB - valueA;
             });
             
             // 渲染表格
-            renderArticleTable(filteredArticles);
-            updatePagination(filteredArticles);
+            renderTable();
+            updatePagination();
         }
 
-        // 渲染文章表格
-        function renderArticleTable(filteredArticles = userArticles) {
+        // 渲染表格
+        function renderTable() {
             const tbody = document.getElementById('article-list');
             
             if (filteredArticles.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">没有找到匹配的文章</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">没有找到匹配的文章</td></tr>';
                 return;
             }
             
@@ -1023,6 +885,9 @@
             const currentArticles = filteredArticles.slice(startIndex, endIndex);
             
             tbody.innerHTML = currentArticles.map((article, index) => {
+                // 查找文章的排名数据
+                const articleIndex = userData.article.id.indexOf(article.id);
+                
                 return `
                     <tr>
                         <td>${startIndex + index + 1}</td>
@@ -1037,17 +902,21 @@
                             </a>
                         </td>
                         <td>${formatDate(article.time)}</td>
-                        <td>${article.like.cnt}</td>
-                        <td>${article.likeRank}</td>
-                        <td>${article.comment.cnt}</td>
-                        <td>${article.commentRank}</td>
+                        <td>
+                            ${article.like.cnt}
+                            <div class="rank-info">排名：${userData.article.like.rank.tot}</div>
+                        </td>
+                        <td>
+                            ${article.comment.cnt}
+                            <div class="rank-info">排名：${userData.article.comment.rank.tot}</div>
+                        </td>
                     </tr>
                 `;
             }).join('');
         }
 
         // 更新分页控件
-        function updatePagination(filteredArticles = userArticles) {
+        function updatePagination() {
             const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
             const pageNumbersContainer = document.getElementById('page-numbers');
             const pageInfo = document.getElementById('page-info');
@@ -1082,8 +951,8 @@
             document.querySelectorAll('.page-number').forEach(button => {
                 button.addEventListener('click', function() {
                     currentPage = parseInt(this.getAttribute('data-page'));
-                    renderArticleTable(filteredArticles);
-                    updatePagination(filteredArticles);
+                    renderTable();
+                    updatePagination();
                 });
             });
         }
@@ -1092,25 +961,19 @@
         function goToPrevPage() {
             if (currentPage > 1) {
                 currentPage--;
-                renderArticleTable();
+                renderTable();
                 updatePagination();
             }
         }
 
         // 下一页
         function goToNextPage() {
-            const totalPages = Math.ceil(userArticles.length / itemsPerPage);
+            const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
-                renderArticleTable();
+                renderTable();
                 updatePagination();
             }
-        }
-
-        // 显示错误信息
-        function showError(message) {
-            const container = document.getElementById('user-profile-container');
-            container.innerHTML = `<div class="error">${message}</div>`;
         }
 
         // 工具函数：格式化日期
@@ -1123,30 +986,6 @@
                 hour: '2-digit',
                 minute: '2-digit'
             });
-        }
-
-        // 工具函数：加深颜色
-        function darkenColor(hex, percent) {
-            // 移除#号
-            hex = hex.replace(/^#/, '');
-            
-            // 解析RGB值
-            let r = parseInt(hex.substring(0, 2), 16);
-            let g = parseInt(hex.substring(2, 4), 16);
-            let b = parseInt(hex.substring(4, 6), 16);
-            
-            // 加深颜色
-            r = Math.floor(r * (100 - percent) / 100);
-            g = Math.floor(g * (100 - percent) / 100);
-            b = Math.floor(b * (100 - percent) / 100);
-            
-            // 确保值在0-255范围内
-            r = Math.max(0, Math.min(255, r));
-            g = Math.max(0, Math.min(255, g));
-            b = Math.max(0, Math.min(255, b));
-            
-            // 转换回十六进制
-            return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
         }
     </script>
 </body>
