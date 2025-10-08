@@ -49,6 +49,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 15px 0;
+            position: relative;
         }
         
         .logo {
@@ -66,6 +67,12 @@
             font-size: 1.4rem;
             font-weight: 600;
             color: #2c3e50;
+        }
+        
+        .nav-content {
+            display: flex;
+            align-items: center;
+            gap: 25px;
         }
         
         .nav-links {
@@ -97,6 +104,14 @@
             background-color: #3498db;
         }
         
+        .update-time-nav {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
         /* 主要内容区域 */
         main {
             padding: 30px 0;
@@ -107,15 +122,6 @@
             margin-bottom: 20px;
             color: #2c3e50;
             font-size: 1.8rem;
-        }
-        
-        .update-time {
-            background-color: #e8f4fd;
-            padding: 12px 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            color: #2c3e50;
-            font-size: 0.9rem;
         }
         
         .controls {
@@ -200,30 +206,30 @@
             background-color: #f9f9f9;
         }
         
-        /* 固定列宽 */
+        /* 固定列宽 - 调整为与用户页面类似的宽度分配 */
         th:nth-child(1), td:nth-child(1) { width: 6%; }   /* 序号 */
         th:nth-child(2), td:nth-child(2) { width: 35%; } /* 文章名称 */
         th:nth-child(3), td:nth-child(3) { width: 10%; } /* 分区 */
-        th:nth-child(4), td:nth-child(4) { width: 18%; } /* 作者 */
-        th:nth-child(5), td:nth-child(5) { width: 15%; } /* 发布时间 */
-        th:nth-child(6), td:nth-child(6) { width: 8%; }  /* 点赞量 */
-        th:nth-child(7), td:nth-child(7) { width: 8%; }  /* 评论量 */
+        th:nth-child(4), td:nth-child(4) { width: 15%; } /* 作者 */
+        th:nth-child(5), td:nth-child(5) { width: 12%; } /* 发布时间 */
+        th:nth-child(6), td:nth-child(6) { width: 11%; } /* 点赞量及排名 */
+        th:nth-child(7), td:nth-child(7) { width: 11%; } /* 评论量及排名 */
         
         .article-title {
             font-weight: 500;
-            color: #333; /* 改为黑色 */
+            color: #333;
         }
         
         .category-name {
-            color: #333; /* 改为黑色 */
+            color: #333;
         }
         
         .author-info {
             display: flex;
             align-items: center;
             gap: 5px;
-            text-decoration: none; /* 移除下划线 */
-            color: inherit; /* 继承父元素颜色 */
+            text-decoration: none;
+            color: inherit;
         }
         
         .author-tag {
@@ -240,6 +246,11 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+        }
+        
+        .rank-info {
+            font-size: 0.85rem;
+            color: #7f8c8d;
         }
         
         /* 分页样式 */
@@ -346,9 +357,20 @@
                 gap: 15px;
             }
             
+            .nav-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
             .nav-links {
                 width: 100%;
                 justify-content: center;
+            }
+            
+            .update-time-nav {
+                position: static;
+                transform: none;
+                order: 2;
             }
             
             th, td {
@@ -379,11 +401,16 @@
                     <!-- <img src="image/logo.ico" alt="洛谷文章统计站"> -->
                     <span>洛谷文章统计站</span>
                 </a>
-                <div class="nav-links">
-                    <a href="/">首页</a>
-                    <a href="/user">用户</a>
-                    <a href="/article" class="active">文章</a>
-                    <a href="/QandA">常见问题 Q&A</a>
+                <div class="update-time-nav">
+                    数据更新时间：<span id="update-time">加载中...</span>
+                </div>
+                <div class="nav-content">
+                    <div class="nav-links">
+                        <a href="/">首页</a>
+                        <a href="/user">用户</a>
+                        <a href="/article" class="active">文章</a>
+                        <a href="/QandA">常见问题 Q&A</a>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -393,10 +420,6 @@
     <main>
         <div class="container">
             <h1 class="page-title">个人记录区文章统计</h1>
-            
-            <div class="update-time">
-                数据更新时间：<span id="update-time">加载中...</span>
-            </div>
             
             <div class="controls">
                 <select id="sort-by">
@@ -434,8 +457,8 @@
                             <th>分区</th>
                             <th>作者</th>
                             <th>发布时间</th>
-                            <th>点赞量</th>
-                            <th>评论量</th>
+                            <th>点赞量及排名</th>
+                            <th>评论量及排名</th>
                         </tr>
                     </thead>
                     <tbody id="article-list">
@@ -692,8 +715,14 @@
                             </a>
                         </td>
                         <td>${formatDate(article.time)}</td>
-                        <td>${article.like.cnt}</td>
-                        <td>${article.comment.cnt}</td>
+                        <td>
+                            ${article.like.cnt}
+                            <div class="rank-info">排名：${article.like.rank}</div>
+                        </td>
+                        <td>
+                            ${article.comment.cnt}
+                            <div class="rank-info">排名：${article.comment.rank}</div>
+                        </td>
                     </tr>
                 `;
             }).join('');
