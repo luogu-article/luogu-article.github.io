@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户统计 - 洛谷文章统计站</title>
+    <!-- <link rel="icon" href="image/logo.ico" type="image/x-icon"> -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #3498db;
+            transition: color 0.2s;
+        }
+        
+        a:hover {
+            color: #2980b9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo img {
+            height: 32px;
+            width: 32px;
+        }
+        
+        .logo span {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .nav-content {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            font-weight: 500;
+            color: #555;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: #3498db;
+        }
+        
+        .nav-links a.active {
+            color: #3498db;
+        }
+        
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #3498db;
+        }
+        
+        .update-time-nav {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        /* 主要内容区域 */
+        main {
+            padding: 30px 0;
+            min-height: calc(100vh - 160px);
+        }
+        
+        .page-title {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 0.9rem;
+        }
+        
+        input {
+            flex-grow: 1;
+            min-width: 200px;
+        }
+        
+        /* 表格样式 */
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            word-wrap: break-word;
+            vertical-align: middle;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        /* 固定列宽 - 调整为用户页面特定的宽度分配 */
+        th:nth-child(1), td:nth-child(1) { width: 6%; }   /* 序号 */
+        th:nth-child(2), td:nth-child(2) { width: 20%; } /* 用户名 */
+        th:nth-child(3), td:nth-child(3) { width: 12%; } /* 文章数量及排名 */
+        th:nth-child(4), td:nth-child(4) { width: 12%; } /* 总点赞量及排名 */
+        th:nth-child(5), td:nth-child(5) { width: 12%; } /* 平均点赞量及排名 */
+        th:nth-child(6), td:nth-child(6) { width: 12%; } /* 总评论量及排名 */
+        th:nth-child(7), td:nth-child(7) { width: 12%; } /* 平均评论量及排名 */
+        
+        .user-info {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .user-name {
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .user-tag {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            color: white;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .badge-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .rank-info {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+        
+        /* 分页样式 */
+        .pagination-container {
+            position: sticky;
+            bottom: 0;
+            background-color: #f5f7fa;
+            padding: 15px 0;
+            margin-top: 20px;
+            border-top: 1px solid #eaeaea;
+            z-index: 10;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pagination button:hover:not(:disabled) {
+            background-color: #f0f7ff;
+            border-color: #3498db;
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pagination button.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .pagination-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* 底部信息栏 */
+        footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 30px 0;
+            margin-top: 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .footer-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .footer-links a {
+            color: #bdc3c7;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            margin-top: 30px;
+            text-align: center;
+            color: #95a5a6;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #34495e;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .update-time-nav {
+                position: static;
+                transform: none;
+                order: 2;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            table {
+                table-layout: auto;
+            }
+            
+            .pagination {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <!-- <img src="image/logo.ico" alt="洛谷文章统计站"> -->
+                    <span>洛谷文章统计站</span>
+                </a>
+                <div class="update-time-nav">
+                    数据更新时间：<span id="update-time">加载中...</span>
+                </div>
+                <div class="nav-content">
+                    <div class="nav-links">
+                        <a href="/">首页</a>
+                        <a href="/user" class="active">用户</a>
+                        <a href="/article">文章</a>
+                        <a href="/QandA">常见问题 Q&A</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main>
+        <div class="container">
+            <h1 class="page-title">用户统计</h1>
+            
+            <div class="controls">
+                <select id="sort-by">
+                    <option value="article">文章数量</option>
+                    <option value="total-like">总点赞量</option>
+                    <option value="avg-like">平均点赞量</option>
+                    <option value="total-comment">总评论量</option>
+                    <option value="avg-comment">平均评论量</option>
+                </select>
+                
+                <select id="sort-order">
+                    <option value="desc">降序</option>
+                    <option value="asc">升序</option>
+                </select>
+                
+                <input type="text" id="search" placeholder="搜索用户名">
+            </div>
+            
+            <div class="table-container">
+                <table id="user-table">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>用户名</th>
+                            <th>文章数量及排名</th>
+                            <th>总点赞量及排名</th>
+                            <th>平均点赞量及排名</th>
+                            <th>总评论量及排名</th>
+                            <th>平均评论量及排名</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-list">
+                        <!-- 用户数据将通过JavaScript动态加载 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 分页控件 -->
+        <div class="pagination-container">
+            <div class="container">
+                <div class="pagination">
+                    <button id="prev-page" disabled>上一页</button>
+                    <div id="page-numbers"></div>
+                    <button id="next-page">下一页</button>
+                    <div class="pagination-info" id="page-info"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部信息栏 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">洛谷文章统计站</h3>
+                    <p>这是由 @FlowerRed 打造的洛谷文章数据统计站，使用 Github Pages 搭建。（作者太穷，没钱买服务器 TwT）</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">相关链接</h3>
+                    <div class="footer-links">
+                        <a href="https://github.com/luogu-article/" target="_blank">GitHub 个人主页</a>
+                        <a href="https://www.luogu.com.cn/user/1510406" target="_blank">Luogu 个人主页</a>
+                        <a href="/help">帮助中心</a>
+                        <a href="/help/update">更新日志</a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">法律信息</h3>
+                    <div class="footer-links">
+                        <a href="/help/license">用户协议</a>
+                        <a href="/help/license/privacy">隐私政策</a>
+                        <a href="/help/license/disclaimer">免责声明</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2025 洛谷文章统计站 版权所有
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 颜色映射
+        const authorColorMap = {
+            'grey': '#BFBFBF',
+            'yellow': '#AD8B00',
+            'blue': '#3498DB',
+            'green': '#52C41A',
+            'orange': '#F39C11',
+            'pink': '#FE4C61',
+            'purple': '#9D3DCF'
+        };
+
+        const badgeColorMap = {
+            'gold': '#FFC116',
+            'blue': '#3498DB',
+            'green': '#52C41A'
+        };
+
+        // 全局变量
+        let allUsers = [];
+        let filteredUsers = [];
+        let currentPage = 1;
+        const itemsPerPage = 20;
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载数据
+            loadData();
+            
+            // 绑定事件监听器
+            document.getElementById('sort-by').addEventListener('change', sortAndRender);
+            document.getElementById('sort-order').addEventListener('change', sortAndRender);
+            document.getElementById('search').addEventListener('input', filterAndRender);
+            document.getElementById('prev-page').addEventListener('click', goToPrevPage);
+            document.getElementById('next-page').addEventListener('click', goToNextPage);
+        });
+
+        // 加载数据
+        async function loadData() {
+            try {
+                // 加载更新时间
+                const homeResponse = await fetch('/home.json');
+                const homeData = await homeResponse.json();
+                document.getElementById('update-time').textContent = formatDate(homeData.curtime);
+                
+                // 加载用户数据
+                const userResponse = await fetch('user.json');
+                const userData = await userResponse.json();
+                
+                // 转换为数组
+                allUsers = Object.entries(userData).map(([uid, user]) => ({
+                    uid,
+                    ...user
+                }));
+                
+                // 初始渲染
+                filterAndRender();
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                document.getElementById('update-time').textContent = '加载失败';
+                document.getElementById('user-list').innerHTML = '<tr><td colspan="7" style="text-align: center;">数据加载失败，请稍后重试</td></tr>';
+            }
+        }
+
+        // 过滤和渲染用户
+        function filterAndRender() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            
+            if (searchTerm) {
+                filteredUsers = allUsers.filter(user => 
+                    user.name.toLowerCase().includes(searchTerm)
+                );
+            } else {
+                filteredUsers = [...allUsers];
+            }
+            
+            currentPage = 1; // 重置到第一页
+            sortAndRender();
+        }
+
+        // 排序和渲染用户
+        function sortAndRender() {
+            const sortBy = document.getElementById('sort-by').value;
+            const sortOrder = document.getElementById('sort-order').value;
+            
+            // 排序
+            filteredUsers.sort((a, b) => {
+                let valueA, valueB;
+                
+                if (sortBy === 'article') {
+                    valueA = a.article.cnt;
+                    valueB = b.article.cnt;
+                } else if (sortBy === 'total-like') {
+                    valueA = a.article.like.cnt.tot;
+                    valueB = b.article.like.cnt.tot;
+                } else if (sortBy === 'avg-like') {
+                    valueA = a.article.like.cnt.ave;
+                    valueB = b.article.like.cnt.ave;
+                } else if (sortBy === 'total-comment') {
+                    valueA = a.article.comment.cnt.tot;
+                    valueB = b.article.comment.cnt.tot;
+                } else if (sortBy === 'avg-comment') {
+                    valueA = a.article.comment.cnt.ave;
+                    valueB = b.article.comment.cnt.ave;
+                }
+                
+                return sortOrder === 'asc' ? valueA - valueB : valueB - valueA;
+            });
+            
+            // 渲染表格
+            renderTable();
+            updatePagination();
+        }
+
+        // 渲染表格
+        function renderTable() {
+            const tbody = document.getElementById('user-list');
+            
+            if (filteredUsers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">没有找到匹配的用户</td></tr>';
+                return;
+            }
+            
+            // 计算当前页的用户
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredUsers.length);
+            const currentUsers = filteredUsers.slice(startIndex, endIndex);
+            
+            tbody.innerHTML = currentUsers.map((user, index) => {
+                const userColor = authorColorMap[user.color] || '#000000';
+                const badgeColor = badgeColorMap[user.badge] || '#000000';
+                
+                return `
+                    <tr>
+                        <td>${startIndex + index + 1}</td>
+                        <td>
+                            <a href="/user/${user.uid}" class="user-info">
+                                <span class="user-name" style="color: ${userColor}; font-weight: bold;">${user.name}</span>
+                                ${user.tag ? `
+                                    <span class="user-tag" style="background-color: ${userColor}; border-color: ${darkenColor(userColor, 20)};">
+                                        ${user.tag}
+                                    </span>
+                                ` : ''}
+                                ${user.badge ? `
+                                    <svg class="badge-icon" viewBox="0 0 512 512" style="color: ${badgeColor};">
+                                        <g>
+                                            <path fill="${badgeColor}" d="M0 256c0 36.8 20.7 68.8 51.1 84.9C41 373.8 49 411 75 437s63.3 34 96.1 23.9C187.2 491.3 219.2 512 256 512s68.8-20.7 84.9-51.1C373.8 471 411 463 437 437s34-63.3 23.9-96.1C491.3 324.8 512 292.8 512 256s-20.7-68.8-51.1-84.9C471 138.2 463 101 437 75s-63.3-34-96.1-23.9C324.8 20.7 292.8 0 256 0s-68.8 20.7-84.9 51.1C138.2 41 101 49 75 75s-34 63.3-23.9 96.1C20.7 187.2 0 219.2 0 256zm136 0c0-6.1 2.3-12.3 7-17c9.4-9.4 24.6-9.4 33.9 0l47 47c37-37 74-74 111-111c4.7-4.7 10.8-7 17-7s12.3 2.3 17 7c2.3 2.3 4.1 5 5.3 7.9c.6 1.5 1 2.9 1.3 4.4c.2 1.1 .3 2.2 .3 2.2c.1 1.2 .1 1.2 .1 2.5c-.1 1.5-.1 1.9-.1 2.3c-.1 .7-.2 1.5-.3 2.2c-.3 1.5-.7 3-1.3 4.4c-1.2 2.9-2.9 5.6-5.3 7.9c-42.7 42.7-85.3 85.3-128 128c-4.7 4.7-10.8 7-17 7s-12.3-2.3-17-7c-21.3-21.3-42.7-42.7-64-64c-4.7-4.7-7-10.8-7-17z"></path>
+                                            <path fill="white" d="M369 175c9.4 9.4 9.4 24.6 0 33.9L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0z"></path>
+                                        </g>
+                                    </svg>
+                                ` : ''}
+                            </a>
+                        </td>
+                        <td>
+                            ${user.article.cnt}
+                            <div class="rank-info">排名：${user.article.rank}</div>
+                        </td>
+                        <td>
+                            ${user.article.like.cnt.tot}
+                            <div class="rank-info">排名：${user.article.like.rank.tot}</div>
+                        </td>
+                        <td>
+                            ${user.article.like.cnt.ave.toFixed(2)}
+                            <div class="rank-info">排名：${user.article.like.rank.ave}</div>
+                        </td>
+                        <td>
+                            ${user.article.comment.cnt.tot}
+                            <div class="rank-info">排名：${user.article.comment.rank.tot}</div>
+                        </td>
+                        <td>
+                            ${user.article.comment.cnt.ave.toFixed(2)}
+                            <div class="rank-info">排名：${user.article.comment.rank.ave}</div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // 更新分页控件
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+            const pageNumbersContainer = document.getElementById('page-numbers');
+            const pageInfo = document.getElementById('page-info');
+            const prevButton = document.getElementById('prev-page');
+            const nextButton = document.getElementById('next-page');
+            
+            // 更新上一页/下一页按钮状态
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages || totalPages === 0;
+            
+            // 更新页码信息
+            pageInfo.textContent = `共 ${filteredUsers.length} 位用户，第 ${currentPage} 页，共 ${totalPages} 页`;
+            
+            // 生成页码按钮
+            let pageButtons = '';
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            // 调整起始页，确保显示完整的maxVisiblePages个页码
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                pageButtons += `<button class="page-number ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            }
+            
+            pageNumbersContainer.innerHTML = pageButtons;
+            
+            // 添加页码按钮事件监听器
+            document.querySelectorAll('.page-number').forEach(button => {
+                button.addEventListener('click', function() {
+                    currentPage = parseInt(this.getAttribute('data-page'));
+                    renderTable();
+                    updatePagination();
+                });
+            });
+        }
+
+        // 上一页
+        function goToPrevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+                updatePagination();
+            }
+        }
+
+        // 下一页
+        function goToNextPage() {
+            const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+                updatePagination();
+            }
+        }
+
+        // 工具函数：格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // 工具函数：加深颜色
+        function darkenColor(hex, percent) {
+            // 移除#号
+            hex = hex.replace(/^#/, '');
+            
+            // 解析RGB值
+            let r = parseInt(hex.substring(0, 2), 16);
+            let g = parseInt(hex.substring(2, 4), 16);
+            let b = parseInt(hex.substring(4, 6), 16);
+            
+            // 加深颜色
+            r = Math.floor(r * (100 - percent) / 100);
+            g = Math.floor(g * (100 - percent) / 100);
+            b = Math.floor(b * (100 - percent) / 100);
+            
+            // 确保值在0-255范围内
+            r = Math.max(0, Math.min(255, r));
+            g = Math.max(0, Math.min(255, g));
+            b = Math.max(0, Math.min(255, b));
+            
+            // 转换回十六进制
+            return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
