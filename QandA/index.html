@@ -296,43 +296,19 @@
     <script>
         // 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
-            // 高亮当前导航链接
-            highlightCurrentNavLink();
-            
-            // 加载更新时间
+            // 加载数据更新时间
             loadUpdateTime();
         });
 
-        // 高亮当前导航链接
-        function highlightCurrentNavLink() {
-            const navLinks = document.querySelectorAll('.nav-links a');
-            const currentPath = window.location.pathname;
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                
-                // 简单路径匹配逻辑
-                const linkPath = link.getAttribute('href');
-                if (currentPath === linkPath || 
-                    (linkPath !== '/' && currentPath.startsWith(linkPath))) {
-                    link.classList.add('active');
-                }
-            });
-        }
-
-        // 加载更新时间
+        // 加载数据更新时间
         async function loadUpdateTime() {
             try {
-                // 这里可以加载实际的数据更新时间
-                // 示例：从某个JSON文件获取更新时间
-                const response = await fetch('/home.json');
-                const data = await response.json();
-                document.getElementById('update-time').textContent = formatDate(data.curtime);
-                
-                // 暂时使用当前时间作为示例
-                document.getElementById('update-time').textContent = formatDate(new Date());
+                // 加载更新时间
+                const homeResponse = await fetch('/home.json');
+                const homeData = await homeResponse.json();
+                document.getElementById('update-time').textContent = formatDate(homeData.curtime);
             } catch (error) {
-                console.error('加载更新时间失败:', error);
+                console.error('加载数据失败:', error);
                 document.getElementById('update-time').textContent = '加载失败';
             }
         }
