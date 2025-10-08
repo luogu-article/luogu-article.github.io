@@ -119,38 +119,134 @@
         }
         
         .page-title {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            border-radius: 2px;
+        }
+        
+        .intro-section {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .intro-card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .intro-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-bottom: 20px;
             color: #2c3e50;
-            font-size: 1.8rem;
+            font-size: 1.4rem;
         }
         
-        .content-section {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 30px;
-            margin-bottom: 30px;
+        .card-title i {
+            font-size: 1.6rem;
+            color: #3498db;
         }
         
-        .content-section h2 {
+        .intro-card p {
             margin-bottom: 15px;
+            color: #555;
+            line-height: 1.7;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f7ff, #e1f0ff);
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 25px 0;
+        }
+        
+        .highlight-box p {
+            margin-bottom: 0;
             color: #2c3e50;
-            font-size: 1.5rem;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+            font-weight: 500;
         }
         
-        .content-section p {
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #3498db;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        
+        .contact-link:hover {
+            background: #2980b9;
+            color: white;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .feature-item {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #3498db;
             margin-bottom: 15px;
         }
         
-        .content-section ul {
-            margin-left: 20px;
-            margin-bottom: 15px;
+        .feature-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
         }
         
-        .content-section li {
-            margin-bottom: 8px;
+        .feature-desc {
+            color: #666;
+            line-height: 1.6;
         }
         
         /* 底部信息栏 */
@@ -225,11 +321,25 @@
                 order: 2;
             }
             
-            .content-section {
-                padding: 20px;
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .intro-section {
+                flex-direction: column;
+            }
+            
+            .intro-card {
+                min-width: 100%;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
+    <!-- 使用Font Awesome图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- 导航栏 -->
@@ -260,22 +370,64 @@
         <div class="container">
             <h1 class="page-title">概览</h1>
             
-            <div class="content-section">
-                <p>欢迎来到洛谷文章统计站！</p>
+            <div class="intro-section">
+                <div class="intro-card">
+                    <h2 class="card-title">
+                        <i class="fas fa-chart-line"></i>
+                        关于本站
+                    </h2>
+                    <p>欢迎来到洛谷文章统计站！</p>
+                    <p>这里统计了洛谷文章广场的（暂时是）休闲·娱乐区和闲话区，及部分其他文章的点赞量、评论量等数据并进行了排名。</p>
+                    <p>您可以点击导航栏上的按钮来浏览。</p>
+                </div>
                 
-                <p>这里统计了洛谷文章广场的（暂时是）休闲·娱乐区和闲话区，及部分其他文章的点赞量、评论量等数据并进行了排名。</p>
-                
-                <p>您可以点击导航栏上的按钮来浏览。</p>
+                <div class="intro-card">
+                    <h2 class="card-title">
+                        <i class="fas fa-cogs"></i>
+                        工作原理
+                    </h2>
+                    <p>网站使用 Github Pages 搭建，正因如此，网站无法实现自动实时爬取洛谷文章数据，只能靠网站开发者定期手动更新数据。</p>
+                    
+                    <div class="highlight-box">
+                        <p>您可以在每个页面的导航栏处看到「数据更新时间」，这是开发者最后一次更新数据的时间。</p>
+                    </div>
+                    
+                    <p>如果您发现本站数据与洛谷文章广场内的数据不相同，就是因为数据还没有更新。</p>
+                    <p>你可以去洛谷 at/私信开发者 
+                        <a href="https://www.luogu.com.cn/user/1510406" target="_blank" class="contact-link">
+                            <i class="fas fa-user"></i>FlowerRed
+                        </a>
+                        来催更数据！
+                    </p>
+                    <p>如果你的文章不在列表内，但是也想被收录，你也可以联系开发者。请注意：该文章必须是全站推荐文章。</p>
+                    <p>数据更新频率可以参考页面底部的「更新日志」。</p>
+                </div>
             </div>
             
-            <div class="content-section">
-                <h2>工作原理</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <h3 class="feature-title">文章统计</h3>
+                    <p class="feature-desc">查看各分区文章的点赞量、评论量等数据统计和排名</p>
+                </div>
                 
-                <p>网站使用 Github Pages 搭建，正因如此，网站无法实现自动实时爬取洛谷文章数据，只能靠网站开发者定期手动更新数据。因此，您应该能在每一个页面的导航栏处看见一个「数据更新时间」，这便是开发者最后一次更新数据的时间。所以如果您发现本站数据与洛谷文章广场内的数据不相同，就是因为数据还没有更新。你可以去洛谷 at/私信开发者 @<a href="https://www.luogu.com.cn/user/1510406" target="_blank">FlowerRed</a> 来催更数据！</p>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">用户分析</h3>
+                    <p class="feature-desc">了解用户发文情况和活跃度，查看用户文章统计数据</p>
+                </div>
                 
-                <p>如果你的文章不在列表内，但是也想被收录，你也可以联系开发者。请注意：该文章必须是全站推荐文章。</p>
-                
-                <p>数据更新频率可以参考页面底部的「更新日志」。</p>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h3 class="feature-title">常见问题</h3>
+                    <p class="feature-desc">解答关于本站的常见问题，获取使用帮助</p>
+                </div>
             </div>
         </div>
     </main>
