@@ -1,0 +1,14 @@
+{
+    "instance": "main",
+    "template": "error",
+    "status": 403,
+    "locale": "zh-CN",
+    "data": {
+        "errorCode": 403,
+        "errorType": "Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException",
+        "errorMessage": "The article is not valid",
+        "errorData": []
+    },
+    "user": null,
+    "time": 1766631343.328411
+}
