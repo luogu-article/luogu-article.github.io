@@ -1,0 +1,14 @@
+{
+    "instance": "main",
+    "template": "error",
+    "status": 403,
+    "locale": "zh-CN",
+    "data": {
+        "errorCode": 403,
+        "errorType": "Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException",
+        "errorMessage": "该用户未通过实名认证",
+        "errorData": []
+    },
+    "user": null,
+    "time": 1766633569.506941
+}
